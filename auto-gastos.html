@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0f1923">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>AutoGastos</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1923;
+    --bg2: #162130;
+    --bg3: #1e2d3d;
+    --card: #1a2535;
+    --card2: #203048;
+    --accent: #e8a020;
+    --accent2: #f5bc4a;
+    --red: #e05050;
+    --green: #38c78b;
+    --blue: #4a90d9;
+    --text: #e8edf3;
+    --text2: #8fa4be;
+    --text3: #5a7a99;
+    --border: #2a3f57;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+    --radius: 14px;
+    --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #162130 0%, #1a2d45 100%);
+    padding: 20px 20px 0;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-icon {
+    width: 38px; height: 38px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .logo-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 1px;
+  }
+  .logo-text span { color: var(--accent); }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .stat-item {
+    background: var(--bg3);
+    border-radius: 10px;
+    padding: 10px 8px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+  .stat-value {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+  }
+  .tab {
+    flex: 1;
+    padding: 12px 8px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: var(--transition);
+    letter-spacing: 0.3px;
+  }
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ── MAIN CONTENT ── */
+  .content { padding: 16px; }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ── FORM ── */
+  .form-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 18px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  .form-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .form-row { margin-bottom: 13px; }
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 13px;
+  }
+  label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 5px;
+  }
+  input, select, textarea {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 11px 13px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: var(--transition);
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    background: var(--card2);
+    box-shadow: 0 0 0 3px rgba(232,160,32,0.12);
+  }
+  input::placeholder, textarea::placeholder { color: var(--text3); }
+  textarea { resize: none; height: 70px; }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a7a99' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+  select option { background: #1e2d3d; }
+
+  .input-prefix {
+    position: relative;
+  }
+  .input-prefix span {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 600;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .input-prefix input { padding-left: 26px; }
+
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    border: none;
+    border-radius: 10px;
+    color: #0f1923;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: var(--transition);
+    text-transform: uppercase;
+  }
+  .btn-submit:active { transform: scale(0.97); opacity: 0.9; }
+
+  /* ── HISTORIAL ── */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-chip {
+    padding: 7px 13px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text2);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--transition);
+    flex-shrink: 0;
+  }
+  .filter-chip.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0f1923;
+    font-weight: 700;
+  }
+
+  .search-box {
+    position: relative;
+    margin-bottom: 14px;
+  }
+  .search-box input {
+    padding-left: 38px;
+  }
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3);
+    font-size: 15px;
+    pointer-events: none;
+  }
+
+  .expense-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .expense-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: var(--transition);
+    animation: slideIn 0.25s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .expense-card:active { transform: scale(0.99); }
+
+  .expense-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    gap: 12px;
+    cursor: pointer;
+  }
+  .expense-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .icon-mantenimiento { background: rgba(74,144,217,0.15); }
+  .icon-reparacion    { background: rgba(224,80,80,0.15); }
+  .icon-combustible   { background: rgba(232,160,32,0.15); }
+  .icon-neumaticos    { background: rgba(56,199,139,0.15); }
+  .icon-electrico     { background: rgba(150,100,240,0.15); }
+  .icon-otro          { background: rgba(143,164,190,0.15); }
+
+  .expense-info { flex: 1; min-width: 0; }
+  .expense-motivo {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .expense-meta {
+    display: flex;
+    gap: 10px;
+    margin-top: 3px;
+    font-size: 11px;
+    color: var(--text3);
+  }
+  .expense-meta span { display: flex; align-items: center; gap: 3px; }
+  .expense-right { text-align: right; flex-shrink: 0; }
+  .expense-total {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .expense-km {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+
+  .expense-detail {
+    display: none;
+    padding: 0 14px 14px;
+    border-top: 1px solid var(--border);
+  }
+  .expense-detail.open { display: block; }
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .detail-item { }
+  .detail-item.full { grid-column: 1 / -1; }
+  .detail-key {
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 2px;
+  }
+  .detail-val {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .detail-val.green { color: var(--green); }
+  .detail-val.blue  { color: var(--blue); }
+  .detail-val.accent { color: var(--accent); font-family: 'Rajdhani'; font-size: 16px; font-weight:700; }
+
+  .btn-delete {
+    margin-top: 12px;
+    width: 100%;
+    padding: 9px;
+    background: rgba(224,80,80,0.1);
+    border: 1px solid rgba(224,80,80,0.3);
+    border-radius: 8px;
+    color: var(--red);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: var(--transition);
+  }
+  .btn-delete:active { background: rgba(224,80,80,0.2); }
+
+  /* ── RESUMEN ── */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .summary-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px 14px;
+    border: 1px solid var(--border);
+  }
+  .summary-card.full { grid-column: 1 / -1; }
+  .summary-card.accent-card {
+    background: linear-gradient(135deg, rgba(232,160,32,0.15) 0%, rgba(245,188,74,0.08) 100%);
+    border-color: rgba(232,160,32,0.3);
+  }
+  .sc-label {
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .sc-value {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+  .sc-value.accent { color: var(--accent); font-size: 28px; }
+  .sc-value.green  { color: var(--green); }
+  .sc-value.blue   { color: var(--blue); }
+
+  .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .cat-bar-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .cat-bar-item { }
+  .cat-bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .cat-bar-name {
+    font-size: 13px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .cat-bar-amt {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .cat-bar-track {
+    height: 5px;
+    background: var(--bg3);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .cat-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* Year selector */
+  .year-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .year-btn {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: var(--transition);
+  }
+  .year-btn:active { background: var(--card2); }
+  .year-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 60px;
+    text-align: center;
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text3);
+  }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-text { font-size: 15px; margin-bottom: 6px; color: var(--text2); }
+  .empty-sub  { font-size: 13px; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--green);
+    color: #0f1923;
+    padding: 12px 22px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 999;
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(56,199,139,0.35);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-icon">🚗</div>
+      <div class="logo-text">Auto<span>Gastos</span></div>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-value" id="hdr-total">$0</div>
+      <div class="stat-label">Total año</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="hdr-count">0</div>
+      <div class="stat-label">Registros</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="hdr-km">-</div>
+      <div class="stat-label">Últ. km</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('nuevo')">➕ Nuevo</div>
+    <div class="tab" onclick="switchTab('historial')">📋 Historial</div>
+    <div class="tab" onclick="switchTab('resumen')">📊 Resumen</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- NUEVO -->
+  <div class="view active" id="view-nuevo">
+    <div class="form-card">
+      <div class="form-title">📝 Cargar Gasto</div>
+
+      <div class="form-row-2">
+        <div>
+          <label>Fecha</label>
+          <input type="date" id="f-fecha">
+        </div>
+        <div>
+          <label>Kilómetros</label>
+          <input type="number" id="f-km" placeholder="ej. 45000">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Motivo / Descripción</label>
+        <input type="text" id="f-motivo" placeholder="ej. Cambio de aceite y filtro">
+      </div>
+
+      <div class="form-row">
+        <label>Categoría</label>
+        <select id="f-categoria">
+          <option value="mantenimiento">🔧 Mantenimiento</option>
+          <option value="reparacion">🛠️ Reparación</option>
+          <option value="combustible">⛽ Combustible</option>
+          <option value="neumaticos">🔵 Neumáticos</option>
+          <option value="electrico">⚡ Eléctrico</option>
+          <option value="otro">📦 Otro</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>Repuesto / Material (opcional)</label>
+        <input type="text" id="f-repuesto" placeholder="ej. Filtro de aceite WIX 51522">
+      </div>
+
+      <div class="form-row">
+        <label>Marca del Repuesto (opcional)</label>
+        <input type="text" id="f-marca" placeholder="ej. Bosch, NGK, Monroe...">
+      </div>
+
+      <div class="form-row-2">
+        <div>
+          <label>Mano de Obra</label>
+          <div class="input-prefix">
+            <span>$</span>
+            <input type="number" id="f-mano-obra" placeholder="0">
+          </div>
+        </div>
+        <div>
+          <label>Repuestos / Mat.</label>
+          <div class="input-prefix">
+            <span>$</span>
+            <input type="number" id="f-costo-repuesto" placeholder="0">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Taller / Lugar</label>
+        <input type="text" id="f-taller" placeholder="ej. Taller Don Roberto">
+      </div>
+
+      <div class="form-row">
+        <label>Notas adicionales</label>
+        <textarea id="f-notas" placeholder="Observaciones, próximo servicio en X km..."></textarea>
+      </div>
+
+      <button class="btn-submit" onclick="guardarGasto()">💾 GUARDAR GASTO</button>
+    </div>
+  </div>
+
+  <!-- HISTORIAL -->
+  <div class="view" id="view-historial">
+    <div class="search-box">
+      <div class="search-icon">🔍</div>
+      <input type="text" id="search-input" placeholder="Buscar por motivo, taller..." oninput="renderHistorial()">
+    </div>
+    <div class="filter-bar" id="filter-bar">
+      <div class="filter-chip active" data-cat="todos" onclick="setFilter(this)">Todos</div>
+      <div class="filter-chip" data-cat="mantenimiento" onclick="setFilter(this)">🔧 Mantenimiento</div>
+      <div class="filter-chip" data-cat="reparacion" onclick="setFilter(this)">🛠️ Reparación</div>
+      <div class="filter-chip" data-cat="combustible" onclick="setFilter(this)">⛽ Combustible</div>
+      <div class="filter-chip" data-cat="neumaticos" onclick="setFilter(this)">🔵 Neumáticos</div>
+      <div class="filter-chip" data-cat="electrico" onclick="setFilter(this)">⚡ Eléctrico</div>
+      <div class="filter-chip" data-cat="otro" onclick="setFilter(this)">📦 Otro</div>
+    </div>
+    <div class="expense-list" id="expense-list"></div>
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="view" id="view-resumen">
+    <div class="year-selector">
+      <button class="year-btn" onclick="changeYear(-1)">‹</button>
+      <div class="year-label" id="year-label">2025</div>
+      <button class="year-btn" onclick="changeYear(1)">›</button>
+    </div>
+    <div class="summary-grid">
+      <div class="summary-card full accent-card">
+        <div class="sc-label">💰 Total invertido</div>
+        <div class="sc-value accent" id="sum-total">$0</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-label">🔧 Mano de obra</div>
+        <div class="sc-value green" id="sum-mano">$0</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-label">📦 Repuestos</div>
+        <div class="sc-value blue" id="sum-rep">$0</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-label">📋 Registros</div>
+        <div class="sc-value" id="sum-count">0</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-label">📏 Últ. km</div>
+        <div class="sc-value" id="sum-km">-</div>
+      </div>
+    </div>
+
+    <div class="section-title">Por categoría</div>
+    <div class="cat-bar-list" id="cat-bars"></div>
+
+    <div class="section-title">Últimos gastos</div>
+    <div class="expense-list" id="recent-list"></div>
+  </div>
+
+</div><!-- /content -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── DATA ───────────────────────────────────────
+const STORAGE_KEY = 'autogastos_v1';
+
+function loadData() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+function saveData(arr) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+}
+
+let gastos = loadData();
+let activeFilter = 'todos';
+let selectedYear = new Date().getFullYear();
+
+// ─── CATEGORÍAS ─────────────────────────────────
+const CAT = {
+  mantenimiento: { icon: '🔧', label: 'Mantenimiento', color: '#4a90d9' },
+  reparacion:    { icon: '🛠️', label: 'Reparación',    color: '#e05050' },
+  combustible:   { icon: '⛽', label: 'Combustible',   color: '#e8a020' },
+  neumaticos:    { icon: '🔵', label: 'Neumáticos',    color: '#38c78b' },
+  electrico:     { icon: '⚡', label: 'Eléctrico',     color: '#9664f0' },
+  otro:          { icon: '📦', label: 'Otro',          color: '#8fa4be' },
+};
+
+// ─── TABS ────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', ['nuevo','historial','resumen'][i] === tab);
+  });
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + tab).classList.add('active');
+  if (tab === 'historial') renderHistorial();
+  if (tab === 'resumen')   renderResumen();
+}
+
+// ─── FORM ────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('f-fecha').value = new Date().toISOString().split('T')[0];
+  updateHeader();
+});
+
+function guardarGasto() {
+  const motivo = document.getElementById('f-motivo').value.trim();
+  if (!motivo) { showToast('⚠️ Ingresá el motivo', '#e05050'); return; }
+
+  const manoObra = parseFloat(document.getElementById('f-mano-obra').value) || 0;
+  const costoRep = parseFloat(document.getElementById('f-costo-repuesto').value) || 0;
+
+  const gasto = {
+    id: Date.now(),
+    fecha: document.getElementById('f-fecha').value,
+    km: parseInt(document.getElementById('f-km').value) || null,
+    motivo,
+    categoria: document.getElementById('f-categoria').value,
+    repuesto: document.getElementById('f-repuesto').value.trim(),
+    marca: document.getElementById('f-marca').value.trim(),
+    manoObra,
+    costoRepuesto: costoRep,
+    total: manoObra + costoRep,
+    taller: document.getElementById('f-taller').value.trim(),
+    notas: document.getElementById('f-notas').value.trim(),
+  };
+
+  gastos.unshift(gasto);
+  saveData(gastos);
+  updateHeader();
+  limpiarForm();
+  showToast('✅ Gasto guardado');
+}
+
+function limpiarForm() {
+  document.getElementById('f-km').value = '';
+  document.getElementById('f-motivo').value = '';
+  document.getElementById('f-repuesto').value = '';
+  document.getElementById('f-marca').value = '';
+  document.getElementById('f-mano-obra').value = '';
+  document.getElementById('f-costo-repuesto').value = '';
+  document.getElementById('f-taller').value = '';
+  document.getElementById('f-notas').value = '';
+  document.getElementById('f-fecha').value = new Date().toISOString().split('T')[0];
+}
+
+// ─── HISTORIAL ───────────────────────────────────
+function setFilter(el) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  activeFilter = el.dataset.cat;
+  renderHistorial();
+}
+
+function renderHistorial() {
+  const search = (document.getElementById('search-input').value || '').toLowerCase();
+  let filtered = gastos.filter(g => {
+    const matchCat = activeFilter === 'todos' || g.categoria === activeFilter;
+    const matchSearch = !search ||
+      g.motivo.toLowerCase().includes(search) ||
+      (g.taller && g.taller.toLowerCase().includes(search)) ||
+      (g.repuesto && g.repuesto.toLowerCase().includes(search)) ||
+      (g.marca && g.marca.toLowerCase().includes(search));
+    return matchCat && matchSearch;
+  });
+
+  const list = document.getElementById('expense-list');
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-text">Sin resultados</div>
+      <div class="empty-sub">Probá cambiando el filtro</div>
+    </div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(g => expenseCard(g)).join('');
+}
+
+function expenseCard(g) {
+  const cat = CAT[g.categoria] || CAT.otro;
+  const fecha = g.fecha ? new Date(g.fecha + 'T12:00:00').toLocaleDateString('es-AR', { day:'2-digit', month:'short', year:'numeric' }) : '';
+  return `
+  <div class="expense-card" id="card-${g.id}">
+    <div class="expense-header" onclick="toggleDetail(${g.id})">
+      <div class="expense-icon icon-${g.categoria}">${cat.icon}</div>
+      <div class="expense-info">
+        <div class="expense-motivo">${g.motivo}</div>
+        <div class="expense-meta">
+          <span>📅 ${fecha}</span>
+          ${g.taller ? `<span>🏪 ${g.taller}</span>` : ''}
+        </div>
+      </div>
+      <div class="expense-right">
+        <div class="expense-total">${fmtMoney(g.total)}</div>
+        ${g.km ? `<div class="expense-km">📏 ${fmtNum(g.km)} km</div>` : ''}
+      </div>
+    </div>
+    <div class="expense-detail" id="detail-${g.id}">
+      <div class="detail-grid">
+        <div class="detail-item">
+          <div class="detail-key">Categoría</div>
+          <div class="detail-val">${cat.icon} ${cat.label}</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-key">Total</div>
+          <div class="detail-val accent">${fmtMoney(g.total)}</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-key">Mano de obra</div>
+          <div class="detail-val green">${fmtMoney(g.manoObra)}</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-key">Repuestos</div>
+          <div class="detail-val blue">${fmtMoney(g.costoRepuesto)}</div>
+        </div>
+        ${g.repuesto ? `<div class="detail-item full"><div class="detail-key">Repuesto</div><div class="detail-val">${g.repuesto}</div></div>` : ''}
+        ${g.marca ? `<div class="detail-item"><div class="detail-key">Marca</div><div class="detail-val">${g.marca}</div></div>` : ''}
+        ${g.km ? `<div class="detail-item"><div class="detail-key">Kilómetros</div><div class="detail-val">${fmtNum(g.km)} km</div></div>` : ''}
+        ${g.taller ? `<div class="detail-item full"><div class="detail-key">Taller / Lugar</div><div class="detail-val">${g.taller}</div></div>` : ''}
+        ${g.notas ? `<div class="detail-item full"><div class="detail-key">Notas</div><div class="detail-val">${g.notas}</div></div>` : ''}
+      </div>
+      <button class="btn-delete" onclick="eliminarGasto(${g.id})">🗑️ Eliminar este registro</button>
+    </div>
+  </div>`;
+}
+
+function toggleDetail(id) {
+  const el = document.getElementById('detail-' + id);
+  el.classList.toggle('open');
+}
+
+function eliminarGasto(id) {
+  if (!confirm('¿Eliminar este gasto?')) return;
+  gastos = gastos.filter(g => g.id !== id);
+  saveData(gastos);
+  updateHeader();
+  renderHistorial();
+  showToast('🗑️ Eliminado', '#e05050');
+}
+
+// ─── RESUMEN ─────────────────────────────────────
+function changeYear(d) {
+  selectedYear += d;
+  document.getElementById('year-label').textContent = selectedYear;
+  renderResumen();
+}
+
+function renderResumen() {
+  const anio = gastos.filter(g => g.fecha && g.fecha.startsWith(selectedYear.toString()));
+  const total     = anio.reduce((s, g) => s + g.total, 0);
+  const mano      = anio.reduce((s, g) => s + g.manoObra, 0);
+  const rep       = anio.reduce((s, g) => s + g.costoRepuesto, 0);
+  const kmArr     = anio.filter(g => g.km).map(g => g.km);
+  const lastKm    = kmArr.length ? Math.max(...kmArr) : null;
+
+  document.getElementById('sum-total').textContent = fmtMoney(total);
+  document.getElementById('sum-mano').textContent  = fmtMoney(mano);
+  document.getElementById('sum-rep').textContent   = fmtMoney(rep);
+  document.getElementById('sum-count').textContent = anio.length;
+  document.getElementById('sum-km').textContent    = lastKm ? fmtNum(lastKm) + ' km' : '-';
+
+  // Barras por categoría
+  const catTotals = {};
+  anio.forEach(g => { catTotals[g.categoria] = (catTotals[g.categoria] || 0) + g.total; });
+  const maxCat = Math.max(...Object.values(catTotals), 1);
+  const catColors = ['#4a90d9','#e05050','#e8a020','#38c78b','#9664f0','#8fa4be'];
+  const bars = document.getElementById('cat-bars');
+  bars.innerHTML = Object.entries(catTotals).sort((a,b) => b[1]-a[1]).map(([cat, amt]) => {
+    const c = CAT[cat] || CAT.otro;
+    const pct = (amt / maxCat * 100).toFixed(1);
+    return `<div class="cat-bar-item">
+      <div class="cat-bar-header">
+        <div class="cat-bar-name">${c.icon} ${c.label}</div>
+        <div class="cat-bar-amt">${fmtMoney(amt)}</div>
+      </div>
+      <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${pct}%;background:${c.color}"></div></div>
+    </div>`;
+  }).join('') || '<div style="color:var(--text3);font-size:13px;text-align:center;padding:8px">Sin datos para este año</div>';
+
+  // Últimos 3
+  const recent = document.getElementById('recent-list');
+  const last3 = anio.slice(0, 3);
+  recent.innerHTML = last3.length ? last3.map(g => expenseCard(g)).join('') :
+    '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">Sin registros</div></div>';
+}
+
+// ─── HEADER ──────────────────────────────────────
+function updateHeader() {
+  const year = new Date().getFullYear().toString();
+  const anio = gastos.filter(g => g.fecha && g.fecha.startsWith(year));
+  const total = anio.reduce((s, g) => s + g.total, 0);
+  const kmArr = gastos.filter(g => g.km).map(g => g.km);
+  const lastKm = kmArr.length ? Math.max(...kmArr) : null;
+  document.getElementById('hdr-total').textContent = fmtMoney(total);
+  document.getElementById('hdr-count').textContent = gastos.length;
+  document.getElementById('hdr-km').textContent = lastKm ? fmtNum(lastKm) : '-';
+}
+
+// ─── UTILS ───────────────────────────────────────
+function fmtMoney(n) {
+  if (!n) return '$0';
+  return '$' + Math.round(n).toLocaleString('es-AR');
+}
+function fmtNum(n) {
+  return n ? n.toLocaleString('es-AR') : '';
+}
+
+let toastTimer;
+function showToast(msg, color = '#38c78b') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = color;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
